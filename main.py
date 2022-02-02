@@ -43,7 +43,8 @@ def url_to_qpixmap(url: str) -> QPixmap:
     with tempfile.NamedTemporaryFile(suffix='_tempcache', prefix='marketpi_') as file:
         file.write(urlopen(url).read())
         image = QPixmap(file.name)
-    return image 
+        
+    return image.scaled(600,600, Qt.KeepAspectRatio)
 
 # Subclass QMainWindow to customize your application's main window
 class MainWindow(QMainWindow):
@@ -52,12 +53,29 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("My App")
         
+        layout = QGridLayout()
+        
+        #epic for loop going through all json entries here plz
+        
+        tinylayout = QGridLayout()
+        
         label = QLabel()
         label.setPixmap(url_to_qpixmap("https://github.com/mcpiscript/marketpi-repo/raw/main/worlds/NRC_History/NRC_History.png"))
-        button = QPushButton("Press Me!")
+        button = QPushButton("Download")
+        
+        tinylayout.addWidget(label,  0, 0)
+        tinylayout.addWidget(button, 1, 0)
+        
+        tinywidget = QWidget()
+        tinywidget.setLayout(tinylayout)
+        
+        layout.addWidget(tinywidget,  0, 0)
+        layout.addWidget(tinywidget,  0, 1)
+        
 
-        # Set the central widget of the Window.
-        self.setCentralWidget(label)
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
 
 
 app = QApplication(sys.argv)
