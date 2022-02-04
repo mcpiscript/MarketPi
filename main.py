@@ -31,6 +31,7 @@ SOFTWARE.
 import sys
 from urllib.request import urlopen
 import tempfile
+import random
 
 
 
@@ -45,33 +46,40 @@ def url_to_qpixmap(url: str) -> QPixmap:
         image = QPixmap(file.name)
         
     return image.scaled(600,600, Qt.KeepAspectRatio)
+    
+    
+class QWorldDownloadWidget(QWidget):
+    def __init__(self, name: str  = "NRC_History",  baseurl: str = "https://github.com/mcpiscript/marketpi-repo/raw/main/"):
+        super().__init__()
+        layout = QGridLayout()
+        
+        label = QLabel()
+        label.setPixmap(url_to_qpixmap(baseurl + f"worlds/{name}/{name}.png"))
+        button = QPushButton("Download")
+        if random.randint(0, 100) == 69: # hehe
+            button.setIcon(QIcon("assets/icons/download-linux.png"))
+        else:
+            button.setIcon(QIcon("assets/icons/drive-download.png"))
+        
+        layout.addWidget(label,  0, 0)
+        layout.addWidget(button, 1, 0)
+        
+        self.setLayout(layout)
 
 # Subclass QMainWindow to customize your application's main window
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("My App")
+        self.setWindowTitle("MarketPi")
         
         layout = QGridLayout()
         
         #epic for loop going through all json entries here plz
         
-        tinylayout = QGridLayout()
-        
-        label = QLabel()
-        label.setPixmap(url_to_qpixmap("https://github.com/mcpiscript/marketpi-repo/raw/main/worlds/NRC_History/NRC_History.png"))
-        button = QPushButton("Download")
-        
-        tinylayout.addWidget(label,  0, 0)
-        tinylayout.addWidget(button, 1, 0)
-        
-        tinywidget = QWidget()
-        tinywidget.setLayout(tinylayout)
-        
-        layout.addWidget(tinywidget,  0, 0)
-        layout.addWidget(tinywidget,  0, 1)
-        
+       
+        layout.addWidget(QWorldDownloadWidget(),  0,  0)
+        layout.addWidget(QWorldDownloadWidget(),  0,  1)
 
         widget = QWidget()
         widget.setLayout(layout)
