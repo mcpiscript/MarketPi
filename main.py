@@ -39,13 +39,23 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from jsonparser import get_world_list
+
+
+
 def url_to_qpixmap(url: str) -> QPixmap:
+    """
+    This function downloads an image from the URL you pass it. 
+    It then saves it into a temporary file and returns a QPixmap loaded from that temporary file. 
+    The temporary file is then deleted
+    """
+    
     image = None
     with tempfile.NamedTemporaryFile(suffix='_tempcache', prefix='marketpi_') as file:
         file.write(urlopen(url).read())
         image = QPixmap(file.name)
         
-    return image.scaled(600,600, Qt.KeepAspectRatio)
+    return image.scaled(100,100, Qt.KeepAspectRatio)
     
     
 class QWorldDownloadWidget(QWidget):
@@ -54,7 +64,8 @@ class QWorldDownloadWidget(QWidget):
         layout = QGridLayout()
         
         label = QLabel()
-        label.setPixmap(url_to_qpixmap(baseurl + f"worlds/{name}/{name}.png"))
+        label.setPixmap(url_to_qpixmap(baseurl + f"worlds/shots/{name}.png"))
+        print(f"Downloaded image {name}")
         button = QPushButton("Download")
         if random.randint(0, 100) == 69: # hehe
             button.setIcon(QIcon("assets/icons/download-linux.png"))
@@ -76,8 +87,11 @@ class MainWindow(QMainWindow):
         layout = QGridLayout()
         
         #epic for loop going through all json entries here plz
+        worldloop = 0
+        for world in get_world_list("https://github.com/mcpiscript/marketpi-repo/raw/main/worlds/worlds.json"):
+            worldloop += 1
+            layout.addWidget(QWorldDownloadWidget(world["codename"]), 0,  worldloop)
         
-       
         layout.addWidget(QWorldDownloadWidget(),  0,  0)
         layout.addWidget(QWorldDownloadWidget(),  0,  1)
 
