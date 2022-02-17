@@ -64,7 +64,7 @@ class QWorldDownloadWidget(QWidget):
         layout = QGridLayout()
         
         label = QLabel()
-        label.setPixmap(url_to_qpixmap(baseurl + f"worlds/shots/{name}.png"))
+        label.setPixmap(url_to_qpixmap(baseurl + f"worlds/shots/scaled/{name}.png"))
         print(f"Downloaded image {name}")
         button = QPushButton("Download")
         if random.randint(0, 100) == 69: # hehe
