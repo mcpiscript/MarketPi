@@ -59,7 +59,7 @@ def url_to_qpixmap(url: str) -> QPixmap:
     
     
 class QWorldDownloadWidget(QWidget):
-    def __init__(self, name: str  = "NRC_History",  baseurl: str = "https://github.com/mcpiscript/marketpi-repo/raw/main/"):
+    def __init__(self, name: str  = "NRC_History",  baseurl: str = "https://github.com/mcpiscript/marketpi-repo/raw/stable/"):
         super().__init__()
         layout = QGridLayout()
         
@@ -81,23 +81,35 @@ class QWorldDownloadWidget(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        
+        widget = QWidget()
 
         self.setWindowTitle("MarketPi")
+        
+        scroll = QScrollArea()
+        
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(widget)
         
         layout = QGridLayout()
         
         #epic for loop going through all json entries here plz
         worldloop = 0
-        for world in get_world_list("https://github.com/mcpiscript/marketpi-repo/raw/main/worlds/worlds.json"):
+        for world in get_world_list("https://github.com/mcpiscript/marketpi-repo/raw/stable/worlds/worlds.json"):
             worldloop += 1
-            layout.addWidget(QWorldDownloadWidget(world["codename"]), 0,  worldloop)
-        
-        layout.addWidget(QWorldDownloadWidget(),  0,  0)
-        layout.addWidget(QWorldDownloadWidget(),  0,  1)
+            layout.addWidget(QWorldDownloadWidget(world["codename"]), worldloop,  0)
 
-        widget = QWidget()
+        
         widget.setLayout(layout)
-        self.setCentralWidget(widget)
+        
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(widget)
+        
+        self.setCentralWidget(scroll)
 
 
 app = QApplication(sys.argv)
