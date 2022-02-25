@@ -73,7 +73,7 @@ class QWorldDownloadWidget(QWidget):
             button.setIcon(QIcon("assets/icons/drive-download.png"))
         
         layout.addWidget(label,  0, 0)
-        layout.addWidget(button, 1, 0)
+        layout.addWidget(button, 0, 1)
         
         self.setLayout(layout)
 
@@ -82,34 +82,57 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        widget = QWidget()
+        central = QWidget()
+        
+        centrallayout = QStackedLayout()
+        
+        mapwidget = QWidget()
 
         self.setWindowTitle("MarketPi")
         
+        contenttabs = QTabWidget()
+        
+        contenttabs.setTabPosition(QTabWidget.West)
+        contenttabs.setMovable(False)
+        
         scroll = QScrollArea()
         
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(widget)
-        
-        layout = QGridLayout()
+        maplayout = QGridLayout()
         
         #epic for loop going through all json entries here plz
         worldloop = 0
-        for world in get_world_list("https://github.com/mcpiscript/marketpi-repo/raw/stable/worlds/worlds.json"):
+        
+        print("getting the world list")
+        
+        worldlist = get_world_list("https://github.com/mcpiscript/marketpi-repo/raw/stable/worlds/worlds.json")
+        random.shuffle(worldlist)
+        
+        for world in worldlist:
+            print("adding world " + world["codename"])
             worldloop += 1
-            layout.addWidget(QWorldDownloadWidget(world["codename"]), worldloop,  0)
+            maplayout.addWidget(QWorldDownloadWidget(world["codename"]), worldloop,  0)
+            if worldloop == 7:
+                break
 
         
-        widget.setLayout(layout)
+        mapwidget.setLayout(maplayout)
         
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setWidgetResizable(True)
-        scroll.setWidget(widget)
+        scroll.setWidget(mapwidget)
         
-        self.setCentralWidget(scroll)
+        contenttabs.addTab(scroll,  "Worlds")
+        
+        centrallayout.addWidget(contenttabs)
+        
+        centrallayout.setCurrentIndex(0)
+        
+        central.setLayout(centrallayout)
+        
+        
+        
+        self.setCentralWidget(central)
 
 
 app = QApplication(sys.argv)
