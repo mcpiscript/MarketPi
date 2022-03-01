@@ -43,7 +43,7 @@ from jsonparser import get_world_list
 
 
 
-def url_to_qpixmap(url: str) -> QPixmap:
+def url_to_qpixmap(url: str,  filename: str) -> QPixmap:
     """
     This function downloads an image from the URL you pass it. 
     It then saves it into a temporary file and returns a QPixmap loaded from that temporary file. 
@@ -51,7 +51,10 @@ def url_to_qpixmap(url: str) -> QPixmap:
     """
     
     image = None
-    with tempfile.NamedTemporaryFile(suffix='_tempcache', prefix='marketpi_') as file:
+    
+    user = os.getenv("USER")
+    
+    with open(f"/home/{USER}/.marketpi/cache/{filename}.png") as file:
         file.write(urlopen(url).read())
         image = QPixmap(file.name)
         
@@ -64,7 +67,9 @@ class QWorldDownloadWidget(QWidget):
         layout = QGridLayout()
         
         label = QLabel()
-        label.setPixmap(url_to_qpixmap(baseurl + f"worlds/shots/scaled/{name}.png"))
+        label.setStyleSheet(f"background-image : url({baseurl+name})")
+        label.setText("          ")
+        #label.setPixmap(url_to_qpixmap(baseurl + f"worlds/shots/scaled/{name}.png"))
         print(f"Downloaded image {name}")
         button = QPushButton("Download")
         if random.randint(0, 100) == 69: # hehe
