@@ -82,11 +82,11 @@ def set_render_distance(distance: str):
 
 def set_hud(options: str):
     os.environ["GALLIUM_HUD"] = options
-    
-   
+
+
 def set_options(options: dict = DEFAULT_FEATURES):
     output = str()
     for option in options:
         output += f"{str(options[option]).upper()} {option}\n"
-    
+
     os.environ["MCPI_FEATURE_FLAGS"] = output
